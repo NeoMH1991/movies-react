@@ -33,7 +33,10 @@ class LoginForm extends Component {
     }
 
     validateProperty = ({ name, value}) => { //name => username, password when field is clicked
-        Joi.validate()
+        const obj = { [name]: value}
+        const schema = { [name]: this.schema[name]}
+        const {error} = Joi.validate(obj, schema)
+        return error? error.details[0].message : null;
     }
 
     handleSubmit = e => {
@@ -43,11 +46,17 @@ class LoginForm extends Component {
         if (errors) return;
     }
 
-    handleChange = ({currentTarget: userInput}) => { //pick currentTarget and rename it to input
+    handleChange = ({currentTarget: input}) => { //pick currentTarget and rename it to input
         const account = {...this.state.account}; //use ... to clone account
-        account[userInput.name] = userInput.value; // => Current userInput
-        console.log('userinput name',userInput.name);
+        account[input.name] = input.value; // => Current userInput
+        console.log('userinput name',input.name);
         this.setState({ account });
+
+        // const errors = {...this.state.errors};
+        // const errorMessage = this.validateProperty(input);
+        // if (errorMessage) errors[input.name] = errorMessage;
+        // else delete errors[input.name];
+        // this.setState(errors);
     }  
 
     //Access the input-field, 
@@ -75,6 +84,7 @@ class LoginForm extends Component {
                         />
 
                         <button 
+                        disabled={this.validate()}
                         className='btn btn-primary'
                         onClick={this.handleSubmit}
                         >Login</button>
