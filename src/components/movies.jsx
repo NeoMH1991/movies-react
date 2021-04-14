@@ -7,6 +7,7 @@ import { paginate } from '../utils/paginate'
 import _ from 'lodash';
 import { genres, getGenres } from "../services/fakeGenreService";
 import { filter } from "lodash";
+import NavBar from "./navBar";
 
 class Movies extends Component {
   state = {
@@ -57,9 +58,8 @@ handleSort = sortColumn => {
   this.setState({ sortColumn });
 }
 
-  render() {  
-    //Object destructuring
-    const {pageSize, currentPage, movies:allMovies, selectedGenre, sortColumn} = this.state;
+getPagedData = () => {
+const {pageSize, currentPage, movies:allMovies, selectedGenre, sortColumn} = this.state;
 
 const filtered = selectedGenre && selectedGenre !== 'All Genres' //if both are truthy then execute filter
 ? allMovies.filter(m => m.genre.name === selectedGenre) 
@@ -68,18 +68,29 @@ const filtered = selectedGenre && selectedGenre !== 'All Genres' //if both are t
 const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order])
 const movies = paginate(sorted, currentPage, pageSize); //something wrong here
 
+return { totalCount: filtered.length, movies};
+
+}
+
+//--------------------------RENDER---------------------------//
+  render() {  
+    //Object destructuring
+    const {pageSize, currentPage, movies:allMovies, selectedGenre, sortColumn} = this.state;
+
+const {totalCount, movies} = this.getPagedData();
+
     return (
       <div className='row'>
       <div className="col-3">
 <ListGroup //inputs it needs to receive
 items={this.state.genres}
 selectedItem={this.state.selectedGenre}
-onItemSelect={this.handleGenreSelect}
+onItemSelect={this.handleGenreSelect} 
 />
 
       </div>
       <div className="col">
-      <p>Showing {filtered.length} movies in the database</p>
+      <p>Showing {totalCount} movies in the database</p>
 
       <MoviesTable 
         movies={movies}
@@ -90,7 +101,7 @@ onItemSelect={this.handleGenreSelect}
       />
 
 <Pagination  //inputs this component needs to receive
-itemsCount={filtered.length} //Total no.of.items to render
+itemsCount={totalCount.length} //Total no.of.items to render
 pageSize={this.state.pageSize}        //Renders 4 item/page
 currentPage={this.state.currentPage}  //Current page user is at
 onPageChange={this.handlePageChange} //Clickevent when user click page.no

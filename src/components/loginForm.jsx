@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Input from './input';
+import Joi from 'joi-browser';
 
 //whenever working with obj-property dynamically, always use bracket notation
 //undefined and null cannot be used as values of a controlled element
@@ -8,14 +10,30 @@ class LoginForm extends Component {
         errors: {},
     }
 
+    schema = Joi.object({
+        username: Joi.string().min(5).max(10).required().label('Username'),
+        password: Joi.string().min(5).max(10).required().label('Password')
+    })
+
     validate = () => {
-        const {account, errors} = this.state;
-        if (account.username.trim() === '')
-        errors.username = 'Username is required';
-        if (account.password.trim() === '')
-        errors.password = 'Password is required';
-          
-        return Object.keys(errors).length === 0 ? null : this.state.errors;
+        const options = { abortEarly: false}
+        const result = Joi.validate(this.state.account, this.schema, options);
+        console.log(result);
+
+        //if no errors, return, if errors, get array and map into an obj
+        if (!result.error) return null;
+        const errors = {};
+        console.log(result.error.details); // => Array of 4 items
+
+        //iterate through the error array and map onto obj
+        for (let item of result.error.details) 
+        errors[item.path[0]] = item.message;
+        console.log(errors);
+        return errors; // => {username: 'must be 5 char', password: 'must be 5 char'}
+    }
+
+    validateProperty = ({ name, value}) => { //name => username, password when field is clicked
+        Joi.validate()
     }
 
     handleSubmit = e => {
@@ -23,12 +41,12 @@ class LoginForm extends Component {
         const errors = this.validate(); //if no errors validate => null
         this.setState({errors: errors || {} }); //error is never null
         if (errors) return;
-        console.log(errors);
     }
 
-    handleChange = ({currentTarget: input}) => { //pick currentTarget and rename it to input
+    handleChange = ({currentTarget: userInput}) => { //pick currentTarget and rename it to input
         const account = {...this.state.account}; //use ... to clone account
-        account[input.name] = input.value;
+        account[userInput.name] = userInput.value; // => Current userInput
+        console.log('userinput name',userInput.name);
         this.setState({ account });
     }  
 
@@ -39,34 +57,22 @@ class LoginForm extends Component {
         return (
             <div>
                 <h1>Login</h1>
-                <form action="">
-                    <div className='form-group'>
-                        <label htmlFor="username">Username</label>
-                        <input
+                <form onSubmit={this.handleSubmit}>
+                        <Input
+                        name='username'
                         value={account.username} 
                         onChange={this.handleChange}
-                        id='username'
-                        name='username'
-                        type="text" 
-                        className='form-control'
+                        label='Username'
                         error = {errors.username}
-                        /></div>
-{this.state.errors.username && <div className='alert alert-danger'>Username required</div>}
+                        />
 
-
-
-                        <div className='form-group'>
-                        <label htmlFor="password">Password</label>
-                        <input
+                        <Input
+                        name='password'
                         value={account.password} 
                         onChange={this.handleChange}
-                        id='password'
-                        name='password'
-                        type="text" 
-                        className='form-control'
+                        label='Password'
                         error = {errors.password}
-                        /></div>
-{this.state.errors.password && <div className='alert alert-danger'>Password required</div>}
+                        />
 
                         <button 
                         className='btn btn-primary'

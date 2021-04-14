@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import Like from './common/like';
 import TableBody from './common/tableBody';
 import TableHeader from './common/tableHeader';
+import Table from './common/table';
 
 class MoviesTable extends Component {
   columns = [ //property instead of state as this doesnt change
@@ -28,41 +29,8 @@ class MoviesTable extends Component {
     const {movies, onLike, onDelete, onSort, sortColumn} = this.props; //onLike is a func-reference to the handleer in the parent
 
     return (
-    <table className="table">
-    <TableHeader 
-      columns={this.columns}
-      sortColumn={sortColumn}
-      onSort={onSort}
-    />
-
-
-
-<TableBody 
-  columns={this.columns}
-  data={this.props.movies}
-/>
-  {/* <tbody>
-      {movies.map(m => (
-        <tr key={m._id}>
-          <td>{m.title}</td>
-          <td>{m.genre.name}</td>
-          <td>{m.numberInStock}</td>
-          <td>{m.dailyRentalRate}</td>
-          <td><Like 
-          liked={m.liked} 
-          onClick={() => onLike(m)}
-          /></td>
-          <td>
-            <button 
-            onClick={() => onDelete(m)}
-            className='btn btn-danger btn-sm'
-            >Delete</button>
-          </td>
-        </tr>
-      ))}
-  </tbody>   */}
-</table>)
-      
+    <Table columns={this.columns} data={movies} sortColumn={sortColumn} onSort={onSort}/>
+    )
   }
 }
  
