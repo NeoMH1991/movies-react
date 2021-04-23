@@ -5,9 +5,10 @@ import ListGroup from './common/listGroup';
 import { getMovies } from "../services/fakeMovieService";
 import { paginate } from '../utils/paginate'
 import _ from 'lodash';
-import { genres, getGenres } from "../services/fakeGenreService";
+import { genres, getGenres } from "../services/genreService";
 import { filter } from "lodash";
 import NavBar from "./navBar";
+import axios from "axios";
 
 class Movies extends Component {
   state = {
@@ -19,11 +20,12 @@ class Movies extends Component {
     sortColumn: { path: 'title', order: 'asc'}
   };
 
-componentDidMount() {
-  const genres = [{ _id:'', name: 'All Genres'}, ...getGenres()] //using ... to insert 1 more item in array
+async componentDidMount() {
+  const {data} = await axios.get('http://localhost:3900/api/genres');
+  const genres = [{ _id:'', name: 'All Genres'}, ...data] //using ... to insert 1 more item in array
   this.setState({
     movies: getMovies(),
-    genres
+    genres: data,
   })
 }
 
@@ -93,8 +95,8 @@ onItemSelect={this.handleGenreSelect}
       <p>Showing {totalCount} movies in the database</p>
 
       <MoviesTable 
-        movies={movies}
-        sortColumn={sortColumn}
+        data={movies}         //this.state.movies
+        sortColumn={sortColumn} 
         onLike={this.handleLike}
         onDelete={this.handleDelete}
         onSort = {this.handleSort}

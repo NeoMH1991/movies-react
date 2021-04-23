@@ -26,15 +26,18 @@ const sortColumn = {...this.props.sortColumn};
     }
 
 render() { 
+    const { columns } = this.props;
+
     return (
         <thead>
          <tr className='clickable'> 
-        {this.props.columns.map(column => (
+        {columns.map(column => (
         <th 
         className = 'clickable'
         onClick={() => this.raiseSort(column.path)}
         key={column.path || column.key}
-        >{column.label} {this.renderSortIcon(column)}
+        > 
+        {column.label} {this.renderSortIcon(column)}
         </th>
 ))}
         </tr>

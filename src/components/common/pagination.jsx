@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-//Pagination is completely decoupled from Movies and reusable
-
 const Pagination = (props) => {
     //Create an array and map it to page-link, get info from parents
     const {itemsCount, pageSize, onPageChange, currentPage} = props;
@@ -11,8 +9,8 @@ const Pagination = (props) => {
     const pagesCount = Math.ceil(itemsCount/pageSize);
     if (pagesCount === 1) return null;
     const pages = _.range(1, pagesCount+1); //=> [1,2,3]
-
     return <nav>
+    
   <ul className="pagination">
   {pages.map(p => (
     <li key={p} className={p === currentPage? 'page-item active' : 'page-item'}>
@@ -34,3 +32,4 @@ Pagination.propTypes = { //Adding a new property to Pagination
 
  
 export default Pagination;   
+

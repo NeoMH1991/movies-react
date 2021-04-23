@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Input from './input';
 import Joi from 'joi-browser';
+import * as yup from 'yup';
 
 //whenever working with obj-property dynamically, always use bracket notation
 //undefined and null cannot be used as values of a controlled element
@@ -16,18 +17,11 @@ class LoginForm extends Component {
         password: Joi.string().min(5).max(20).required().label('Password')
     })
 
-    schema2 = Joi.object({
-        username: Joi.string().min(5).max(20).required().label('Username'),
-    })
-
     validate = () => {
         const options = { abortEarly: false}
         const result = Joi.validate(this.state.account, this.schema, options);
         console.log('result', result); //=>
-        const schema3 = Joi.build({
-            password: Joi.string.min(5)
-        })
-        console.log(schema3.describe());
+      
 
         //if no errors, return, if errors, get array and map into an obj
         if (!result.error) return null;
@@ -42,17 +36,6 @@ class LoginForm extends Component {
     }
 
     validateProperty = ({ name, value}) => { //name => username, password when field is clicked
-        const obj = {name: value};
-        console.log(name)
-        console.log(this.schema.username);
-        // var schema = Joi.object({
-        //     n
-        // })
-        const {error} = Joi.validate(obj, this.schema2);  //something wrong with this line
-
-        // return error? error.details[0].message : null;
-        // const {error} = Joi.validate(obj, schema);
-
         if (name === 'username') {
             if (value.trim() === '') return 'username is required.';
         }

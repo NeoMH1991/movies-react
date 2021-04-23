@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 class TableBody extends Component {
-    //Helper method to clean up code
     renderCell = (item, column) => {
         if (column.content) return column.content(item);
         return _.get(item, column.path);

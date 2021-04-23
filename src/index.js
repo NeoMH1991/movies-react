@@ -6,7 +6,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
+import logger from './services/logService';
+//index.js is high level file responsible for boostraping our app, its a manager
 
+logger.init();
 
 ReactDOM.render(
   <React.StrictMode>

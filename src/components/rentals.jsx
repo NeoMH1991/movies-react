@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 const Rentals = () => {
     return ( 
-        null
+        <h1>Rentals Page!</h1>
      );
 }
  
